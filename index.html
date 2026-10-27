@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>신나는 영어 문법 탐험대!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding:wght@400;700&family=Nanum+Round:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF6B6B;
+            --primary-light: #FF8E8E;
+            --secondary: #4ECDC4;
+            --yellow: #FFE66D;
+            --purple: #A06CD5;
+            --bg: #F7F9FC;
+            --card-bg: #FFFFFF;
+            --text-main: #2C3E50;
+            --correct: #2ECC71;
+            --wrong: #E74C3C;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Nanum Round', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #EBF4F6;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--card-bg);
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 4px solid #FFF;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--secondary), #3BBA9C);
+            padding: 20px;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        header p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .grammar-badge {
+            display: inline-block;
+            background: var(--yellow);
+            color: var(--text-main);
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            margin-top: 6px;
+        }
+
+        /* Nav Tabs */
+        .tab-nav {
+            display: flex;
+            background: #E8ECEF;
+            padding: 6px;
+            gap: 6px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 5px;
+            border: none;
+            background: transparent;
+            border-radius: 16px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #7F8C8D;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+
+        /* Main Content Area */
+        .content-area {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 1. Story Page */
+        .story-card {
+            background: #FFF9E6;
+            border: 2px dashed var(--yellow);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .story-image-placeholder {
+            text-align: center;
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .story-text {
+            font-size: 1.25rem;
+            line-height: 1.8;
+            color: #333;
+            font-family: 'Nanum Gothic Coding', monospace;
+            font-weight: 700;
+        }
+
+        .highlight {
+            background-color: #FFD43B;
+            padding: 2px 6px;
+            border-radius: 6px;
+            color: #000;
+            cursor: pointer;
+            position: relative;
+            display: inline-block;
+            transition: transform 0.1s;
+        }
+
+        .highlight:hover {
+            transform: scale(1.05);
+        }
+
+        .highlight::after {
+            content: '🔍';
+            font-size: 0.7rem;
+            position: absolute;
+            top: -8px;
+            right: -6px;
+        }
+
+        .story-translation {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px rgba(0,0,0,0.08) solid;
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .audio-btn {
+            background: var(--purple);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin: 0 auto 15px auto;
+            box-shadow: 0 4px 10px rgba(160, 108, 213, 0.3);
+            transition: transform 0.1s;
+        }
+
+        .audio-btn:active {
+            transform: scale(0.96);
+        }
+
+        /* 2. Grammar Learn Page */
+        .grammar-box {
+            background: #EBF8FF;
+            border: 2px solid #BEE3F8;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .grammar-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #2B6CB0;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .grammar-explain {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #2D3748;
+            margin-bottom: 15px;
+        }
+
+        .rule-card {
+            background: white;
+            border-radius: 12px;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        }
+
+        .rule-subject {
+            font-weight: 800;
+            width: 110px;
+            color: var(--primary);
+            font-size: 1.05rem;
+        }
+
+        .rule-arrow {
+            margin: 0 10px;
+            color: #A0AEC0;
+        }
+
+        .rule-verb {
+            font-weight: 800;
+            color: var(--purple);
+            font-size: 1.1rem;
+            background: #F3E8FF;
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        /* 3. Quiz Page */
+        .quiz-card {
+            background: white;
+            border: 2px solid #E2E8F0;
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .quiz-progress {
+            font-size: 0.85rem;
+            color: #718096;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .quiz-question {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin: 15px 0 20px 0;
+            line-height: 1.5;
+            color: var(--text-main);
+        }
+
+        .quiz-blank {
+            display: inline-block;
+            min-width: 60px;
+            border-bottom: 3px solid var(--primary);
+            color: var(--primary);
+            font-weight: 800;
+            padding: 0 5px;
+        }
+
+        .quiz-options {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .option-btn {
+            flex: 1;
+            padding: 15px 10px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            border: 2px solid #CBD5E0;
+            border-radius: 16px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #4A5568;
+        }
+
+        .option-btn:hover {
+            border-color: var(--secondary);
+            background: #E6FFFA;
+        }
+
+        .option-btn.correct {
+            background: #DEF7EC !important;
+            border-color: var(--correct) !important;
+            color: var(--correct) !important;
+        }
+
+        .option-btn.wrong {
+            background: #FDE8E8 !important;
+            border-color: var(--wrong) !important;
+            color: var(--wrong) !important;
+        }
+
+        .feedback-msg {
+            min-height: 24px;
+            font-weight: 800;
+            font-size: 1.05rem;
+            margin-bottom: 15px;
+        }
+
+        .feedback-msg.correct { color: var(--correct); }
+        .feedback-msg.wrong { color: var(--wrong); }
+
+        .next-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
+            display: none;
+        }
+
+        /* Tooltip Modal for Word Details */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            padding: 20px;
+        }
+
+        .modal-card {
+            background: white;
+            padding: 25px;
+            border-radius: 24px;
+            max-width: 320px;
+            width: 100%;
+            text-align: center;
+            animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-word {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .modal-meaning {
+            font-size: 1.1rem;
+            color: #4A5568;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .modal-desc {
+            font-size: 0.95rem;
+            background: #F7FAFC;
+            padding: 10px;
+            border-radius: 10px;
+            color: #718096;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .modal-close-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /* Common Action Button */
+        .action-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
+            margin-top: auto;
+        }
+
+        /* Result Screen */
+        .result-screen {
+            text-align: center;
+            padding: 20px 10px;
+        }
+
+        .result-icon {
+            font-size: 4rem;
+            margin-bottom: 10px;
+        }
+
+        .result-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        .result-score {
+            font-size: 1.2rem;
+            color: #4A5568;
+            margin-bottom: 25px;
+        }
+
+        .restart-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <h1>📖 토끼 루시의 하루</h1>
+        <p>짧은 동화를 읽으며 영어를 배워요!</p>
+        <span class="grammar-badge">오늘의 문법: be동사 (am / is / are)</span>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="tab-nav">
+        <button class="tab-btn active" onclick="switchTab('story')">
+            <span>📖</span> 1. 스토리 읽기
+        </button>
+        <button class="tab-btn" onclick="switchTab('grammar')">
+            <span>💡</span> 2. 문법 공부
+        </button>
+        <button class="tab-btn" onclick="switchTab('quiz')">
+            <span>✏️</span> 3. 퀴즈 풀기
+        </button>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="content-area">
+
+        <!-- TAB 1: STORY PAGE -->
+        <div id="page-story" class="page active">
+            <button class="audio-btn" onclick="readStory()">
+                🔊 소리 내어 읽어주기 (Listen)
+            </button>
+
+            <div class="story-card">
+                <div class="story-image-placeholder">🐰</div>
+                <div class="story-text">
+                    Hello! I <span class="highlight" onclick="showWord('am', '입니다 / 있어요', '\'I\'(나) 뒤에는 항상 am을 써요!')">am</span> Lucy.<br>
+                    I <span class="highlight" onclick="showWord('am', '입니다 / 있어요', '\'I\'(나) 뒤에는 am을 씁니다.')">am</span> a cute rabbit.<br>
+                    My ears <span class="highlight" onclick="showWord('are', '입니다 / 있어요', '귀가 여러 개(두 개)라서 are를 써요!')">are</span> long.<br>
+                    This <span class="highlight" onclick="showWord('is', '입니다 / 있어요', '\'This\'(이것) 하나를 가리킬 때는 is를 써요.')">is</span> my friend, Leo the bear.<br>
+                    He <span class="highlight" onclick="showWord('is', '입니다 / 있어요', '\'He\'(그) 한 사람 뒤에는 is를 써요!')">is</span> very big.<br>
+                    We <span class="highlight" onclick="showWord('are', '입니다 / 있어요', '\'We\'(우리들) 여러 명 뒤에는 are를 써요!')">are</span> good friends!
+                </div>
+
+                <div class="story-translation">
+                    <strong>[한국어 뜻]</strong><br>
+                    안녕! 나는 루시야. 나는 귀여운 토끼지.<br>
+                    내 귀는 길어.<br>
+                    이쪽은 내 친구, 곰 레오야.<br>
+                    그는 정말 커. 우리는 좋은 친구야!
+                </div>
+            </div>
+
+            <p style="text-align: center; font-size: 0.85rem; color: #888; margin-bottom: 15px;">
+                💡 노란색 단어를 누르면 숨겨진 설명을 볼 수 있어요!
+            </p>
+
+            <button class="action-btn" onclick="switchTab('grammar')">문법 익히러 가기 👉</button>
+        </div>
+
+        <!-- TAB 2: GRAMMAR PAGE -->
+        <div id="page-grammar" class="page">
+            <div class="grammar-box">
+                <div class="grammar-title">
+                    <span>✨</span> be동사(am, is, are)란?
+                </div>
+                <div class="grammar-explain">
+                    ~이다, ~에 있다라는 뜻이에요.<br>
+                    <strong>주인공(주어)이 누구냐에 따라 모양이 달라져요!</strong>
+                </div>
+
+                <div class="rule-card">
+                    <span class="rule-subject">I (나)</span>
+                    <span class="rule-arrow">➡️</span>
+                    <span class="rule-verb">am</span>
+                </div>
+                <div class="rule-card">
+                    <span class="rule-subject">He / She / It<br><small style="font-size: 0.8rem; font-weight: normal; color: #666;">(그/그녀/하나)</small></span>
+                    <span class="rule-arrow">➡️</span>
+                    <span class="rule-verb">is</span>
+                </div>
+                <div class="rule-card">
+                    <span class="rule-subject">You / We / They<br><small style="font-size: 0.8rem; font-weight: normal; color: #666;">(너/우리/그들)</small></span>
+                    <span class="rule-arrow">➡️</span>
+                    <span class="rule-verb">are</span>
+                </div>
+            </div>
+
+            <div style="background: #FFF5F5; border-radius: 16px; padding: 15px; margin-bottom: 15px; border: 1px solid #FED7D7;">
+                <h4 style="color: var(--primary); margin-bottom: 5px;">🎯 팁! 이렇게 기억해요</h4>
+                <p style="font-size: 0.95rem; color: #4A5568; line-height: 1.5;">
+                    • <strong>나(I)</strong>는 오직 <strong>am</strong>만 좋아해!<br>
+                    • <strong>혼자(하나)</strong>일 때는 <strong>is</strong>!<br>
+                    • <strong>여러 명</strong>이거나 <strong>너(You)</strong>일 때는 <strong>are</strong>!
+                </p>
+            </div>
+
+            <button class="action-btn" onclick="switchTab('quiz')">퀴즈 풀러 가기 ✏️</button>
+        </div>
+
+        <!-- TAB 3: QUIZ PAGE -->
+        <div id="page-quiz" class="page">
+            <div id="quiz-container" class="quiz-card">
+                <div class="quiz-progress" id="quiz-progress">문제 1 / 4</div>
+                <div class="quiz-question" id="quiz-question">
+                    I <span class="quiz-blank" id="quiz-blank">?</span> a student.
+                </div>
+
+                <div class="quiz-options" id="quiz-options">
+                    <!-- Dynamic Buttons -->
+                </div>
+
+                <div class="feedback-msg" id="feedback-msg"></div>
+
+                <button class="next-btn" id="next-btn" onclick="nextQuestion()">다음 문제 👉</button>
+            </div>
+
+            <!-- Quiz Result View -->
+            <div id="result-container" class="result-screen" style="display: none;">
+                <div class="result-icon">🎉</div>
+                <div class="result-title">참 잘했어요!</div>
+                <div class="result-score" id="result-score">4문제 중 4문제를 맞혔어요!</div>
+                <button class="restart-btn" onclick="resetQuiz()">다시 풀어보기 🔄</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Modal Dialog for Word Click -->
+<div class="modal-overlay" id="word-modal">
+    <div class="modal-card">
+        <div class="modal-word" id="modal-word">am</div>
+        <div class="modal-meaning" id="modal-meaning">입니다</div>
+        <div class="modal-desc" id="modal-desc">설명 내용</div>
+        <button class="modal-close-btn" onclick="closeModal()">확인했어요!</button>
+    </div>
+</div>
+
+<script>
+    // Tab switching
+    function switchTab(tabName) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+
+        if (tabName === 'story') {
+            document.querySelectorAll('.tab-btn')[0].classList.add('active');
+            document.getElementById('page-story').classList.add('active');
+        } else if (tabName === 'grammar') {
+            document.querySelectorAll('.tab-btn')[1].classList.add('active');
+            document.getElementById('page-grammar').classList.add('active');
+        } else if (tabName === 'quiz') {
+            document.querySelectorAll('.tab-btn')[2].classList.add('active');
+            document.getElementById('page-quiz').classList.add('active');
+        }
+    }
+
+    // Modal logic
+    function showWord(word, meaning, desc) {
+        document.getElementById('modal-word').innerText = word;
+        document.getElementById('modal-meaning').innerText = meaning;
+        document.getElementById('modal-desc').innerText = desc;
+        document.getElementById('word-modal').style.display = 'flex';
+        
+        // Read word
+        speakText(word);
+    }
+
+    function closeModal() {
+        document.getElementById('word-modal').style.display = 'none';
+    }
+
+    // TTS (Text-To-Speech)
+    function speakText(text) {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel(); // Stop any ongoing speech
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.8; // Slower rate for 3rd graders
+            window.speechSynthesis.speak(utterance);
+        }
+    }
+
+    function readStory() {
+        const fullStory = "Hello! I am Lucy. I am a cute rabbit. My ears are long. This is my friend, Leo the bear. He is very big. We are good friends!";
+        speakText(fullStory);
+    }
+
+    // Quiz Data & Logic
+    const quizData = [
+        {
+            sentence: "I <span class='quiz-blank'>?</span> a happy rabbit.",
+            options: ["am", "is", "are"],
+            answer: "am",
+            hint: "'I' 뒤에는 항상 am을 써요!"
+        },
+        {
+            sentence: "Leo <span class='quiz-blank'>?</span> a big bear.",
+            options: ["am", "is", "are"],
+            answer: "is",
+            hint: "Leo는 한 명(He)이니까 is를 써요!"
+        },
+        {
+            sentence: "My ears <span class='quiz-blank'>?</span> long.",
+            options: ["am", "is", "are"],
+            answer: "are",
+            hint: "ears(귀들)는 여러 개니까 are를 써요!"
+        },
+        {
+            sentence: "We <span class='quiz-blank'>?</span> good friends.",
+            options: ["am", "is", "are"],
+            answer: "are",
+            hint: "'We'(우리들)는 여러 명이니까 are를 써요!"
+        }
+    ];
+
+    let currentQuizIndex = 0;
+    let score = 0;
+    let isAnswered = false;
+
+    function loadQuiz() {
+        isAnswered = false;
+        const currentQuiz = quizData[currentQuizIndex];
+        
+        document.getElementById('quiz-progress').innerText = `문제 ${currentQuizIndex + 1} / ${quizData.length}`;
+        document.getElementById('quiz-question').innerHTML = currentQuiz.sentence;
+        document.getElementById('feedback-msg').innerText = '';
+        document.getElementById('feedback-msg').className = 'feedback-msg';
+        document.getElementById('next-btn').style.display = 'none';
+
+        const optionsContainer = document.getElementById('quiz-options');
+        optionsContainer.innerHTML = '';
+
+        currentQuiz.options.forEach(option => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = option;
+            btn.onclick = () => selectAnswer(btn, option);
+            optionsContainer.appendChild(btn);
+        });
+    }
+
+    function selectAnswer(selectedBtn, chosenOption) {
+        if (isAnswered) return;
+        isAnswered = true;
+
+        const currentQuiz = quizData[currentQuizIndex];
+        const buttons = document.querySelectorAll('.option-btn');
+
+        if (chosenOption === currentQuiz.answer) {
+            score++;
+            selectedBtn.classList.add('correct');
+            document.getElementById('feedback-msg').innerText = "⭕ 정답이에요! 참 잘했어요!";
+            document.getElementById('feedback-msg').classList.add('correct');
+            speakText("Correct!");
+        } else {
+            selectedBtn.classList.add('wrong');
+            document.getElementById('feedback-msg').innerText = `❌ 아쉬워요! (${currentQuiz.hint})`;
+            document.getElementById('feedback-msg').classList.add('wrong');
+            
+            // Highlight correct answer
+            buttons.forEach(btn => {
+                if (btn.innerText === currentQuiz.answer) {
+                    btn.classList.add('correct');
+                }
+            });
+            speakText("Try again!");
+        }
+
+        document.getElementById('next-btn').style.display = 'block';
+    }
+
+    function nextQuestion() {
+        currentQuizIndex++;
+        if (currentQuizIndex < quizData.length) {
+            loadQuiz();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        document.getElementById('quiz-container').style.display = 'none';
+        document.getElementById('result-container').style.display = 'block';
+        document.getElementById('result-score').innerText = `${quizData.length}문제 중 ${score}문제를 맞혔어요!`;
+        
+        if(score === quizData.length) {
+            speakText("Great job! You got all answers right!");
+        }
+    }
+
+    function resetQuiz() {
+        currentQuizIndex = 0;
+        score = 0;
+        document.getElementById('quiz-container').style.display = 'block';
+        document.getElementById('result-container').style.display = 'none';
+        loadQuiz();
+    }
+
+    // Initialize Quiz on load
+    loadQuiz();
+</script>
+
+</body>
+</html>
